@@ -25,11 +25,13 @@ function main(filePath) {
     const levels = line.split(" ").map((l) => Number.parseInt(l));
     if (
       isReportSafe(levels) ||
+      // --- Part 2
       levels.some((val, index, array) => {
         const copy = [...array];
         copy.splice(index, 1);
         return isReportSafe(copy);
       })
+      // --- End Part 2
     ) {
       numSafeLevels += 1;
     }
