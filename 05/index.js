@@ -40,7 +40,15 @@ console.log(`Total of middle numbers of correct updates is ${totalCorrect}`);
 
 // Part 2
 const orderUpdate = (update) => {
-  update.sort((a, b) => {});
+  update.sort((a, b) => {
+    if (rulePairs.some((rp) => rp[0] === a && rp[1] === b)) {
+      return -1;
+    }
+    if (rulePairs.some((rp) => rp[0] === b && rp[1] === a)) {
+      return 1;
+    }
+    return 0;
+  });
 
   if (rulePairs.every((pair) => isRulePairMet(update, pair))) {
     console.log("Ordering worked");
