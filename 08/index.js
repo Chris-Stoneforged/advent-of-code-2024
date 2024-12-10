@@ -2,47 +2,42 @@ const fs = require("fs");
 
 const writeResult = () => {
   let string = "";
-  for (let i = 0; i < array.length; ++i) {
-    if (i % length === 0) {
+  for (let i = 0; i < inputArray.length; ++i) {
+    if (i % gridLength === 0) {
       string += "\n";
     }
-    string += array[i];
+    string += inputArray[i];
   }
   fs.writeFileSync("./result.txt", string);
 };
 
 const data = fs.readFileSync("./input.txt", "utf-8");
-const length = data.indexOf("\n");
-const array = data.replaceAll("\n", "").split("");
-const height = Math.floor(data.length / length);
+const gridLength = data.indexOf("\n");
+const inputArray = data.replaceAll("\n", "").split("");
+const gridHeight = Math.floor(data.length / gridLength);
 const ignoreChar = ".";
 
 const toCoords = (index) => {
-  return [Math.floor(index / length), index % length];
+  return [Math.floor(index / gridLength), index % gridLength];
 };
 
 const fromCoords = (x, y) => {
-  return x * length + y;
+  return x * gridLength + y;
 };
 
 const frequencies = new Map();
-for (let i = 0; i < array.length; ++i) {
-  const element = array[i];
+for (const element of inputArray) {
   if (element === ignoreChar) {
     continue;
   }
 
-  const a = frequencies.get(element) ?? [];
-  a.push(i);
-  frequencies.set(element, a);
+  const array = frequencies.get(element) ?? [];
+  array.push(i);
+  frequencies.set(element, array);
 }
 
 const uniqueLocations = new Set();
-
 frequencies.forEach((value, key) => {
-  if (key !== "P") {
-    return;
-  }
   for (let i = 0; i < value.length; ++i) {
     uniqueLocations.add(value[i]);
     for (let j = 0; j < value.length; ++j) {
@@ -54,12 +49,12 @@ frequencies.forEach((value, key) => {
       const [x2, y2] = toCoords(value[j]);
       const [dx, dy] = [x2 - x1, y2 - y1];
       let [lx, ly] = [x2 + dx, y2 + dy];
-      while (lx >= 0 && lx < height && ly >= 0 && ly < length) {
+
+      while (lx >= 0 && lx < gridHeight && ly >= 0 && ly < gridLength) {
         const locationIndex = fromCoords(lx, ly);
         uniqueLocations.add(locationIndex);
         lx += dx;
         ly += dy;
-        array[locationIndex] = "#";
       }
     }
   }
